@@ -1,11 +1,11 @@
 import datetime as dt
 import os
 import sys
-
+from datetime import datetime
 from airflow.models import DAG
 from airflow.operators.python import PythonOperator
 
-path = os.path.expanduser('/airflow_hw')
+path = os.path.expanduser('~/airflow_hw')
 # Добавим путь к коду проекта в переменную окружения, чтобы он был доступен python-процессу
 os.environ['PROJECT_PATH'] = path
 # Добавим путь к коду проекта в $PATH, чтобы импортировать функции
@@ -29,12 +29,11 @@ with DAG(
     pipeline = PythonOperator(
         task_id='pipeline',
         python_callable=pipeline,
-        dag = dag
+        dag = dag,
+        start_date = datetime.now().strftime('%Y%m%d%H%M')
     )
     predict = PythonOperator(
         task_id='predict',
         python_callable=predict,
         dag=dag
     )
-
-    pipeline.set_downstream(predict)
